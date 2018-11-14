@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 |
 */
 
-$router->get('facturacion/{ref}', 'API\CalculoController@get_facturacion');
-$router->post('facturacion/{ref}', 'API\CalculoController@post_facturacion');
-$router->delete('facturacion/{ref}', 'API\CalculoController@delete_facturacion');
+$router->get('facturacion/{ref}', 'API\FacturacionController@get_facturacion');
+$router->post('facturacion/{ref}', 'API\FacturacionController@post_facturacion');
+$router->delete('facturacion/{ref}', 'API\FacturacionController@delete_facturacion');
 
 
 $router->get('/', function () use ($router) {

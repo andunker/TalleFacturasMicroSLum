@@ -12,10 +12,7 @@ use Illuminate\Http\Request;
 |
 */
 
-$router->get('sumar', 'API\CalculoController@sumar');
-$router->get('restar', 'API\CalculoController@restar');
-$router->get('multiplicar', 'API\CalculoController@multiplicar');
-$router->get('dividir', 'API\CalculoController@dividir');
+$router->get('routing/{ref}', 'API\RoutingController@routing');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
