@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 |
 */
 
-$router->get('transform/{id_convenio}', 'API\TransformController@transform');
+$router->get('transform', 'API\TransformController@transform');
 
 $router->get('/', function () use ($router) {
     return $router->app->version();

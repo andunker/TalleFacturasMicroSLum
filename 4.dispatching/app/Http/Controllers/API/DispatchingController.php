@@ -19,11 +19,41 @@ class DispatchingController extends Controller
     public function dispatching(Request $request)
     {
 
-if('SOAP'=='SOAP'){
-            die();
-}
+        $data_factura = $request->all();
+        if ($data_factura['convenio']['tipo_servicio'] == 'SOAP') {
 
-elseif('REST'=='REST'){
+
+
+            $client = new \GuzzleHttp\Client();
+
+
+            $xml = $data_factura['formato_pago']['plantilla'];
+
+
+
+            $res = $client->request(
+                'POST',
+                $data_factura['convenio']['endpoint'],
+                [
+                    'headers' => [
+                        'Content-type' => 'text/xml',
+
+
+                        'SOAPAction' => $data_factura['formato_pago']['accion']
+
+
+                    ],
+                    'body' => $xml
+                ]
+
+            );
+
+            return ($res->getBody());
+
+
+
+
+        } elseif ($data_factura['convenio']['tipo_servicio'] == 'REST') {
             die();
         }
 

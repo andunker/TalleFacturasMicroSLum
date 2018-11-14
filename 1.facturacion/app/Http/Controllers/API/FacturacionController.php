@@ -8,7 +8,14 @@ use App\Http\Controllers\Controller;
 class FacturacionController extends Controller
 {
 
+
+    public $hostname;
     public $successStatus = 200;
+
+    public function __construct()
+    {
+        $this->hostname = env('APP_URL', $this->hostname.'');
+    }
 
     /** 
      * get_facturacion api 
@@ -18,14 +25,44 @@ class FacturacionController extends Controller
 
     public function get_facturacion(Request $request)
     {
+
+        return $this->process_request($request);
+      
+    }
+
+    /** 
+     * post_facturacion api 
+     * 
+     * @return \Illuminate\Http\Response 
+     */
+
+    public function post_facturacion(Request $request)
+    {
+       return $this->process_request($request);
+    }
+
+    /** 
+     * delete_facturacion api 
+     * 
+     * @return \Illuminate\Http\Response 
+     */
+
+    public function delete_facturacion(Request $request)
+    {
+        return $this->process_request($request);
+    }
+
+    public function process_request(Request $request){
+
         $ref_factura = $request['ref'];
+        $valor_pagar = $request['valor_pagar'] ? $request['valor_pagar'] : '';
 
         //llamado a routing
 
         $client = new \GuzzleHttp\Client();
         $convenio = $client->request(
             'GET',
-            'http://localhost:8383/routing/' . $ref_factura,
+            $this->hostname . ':8383/routing/' . $ref_factura,
             [
                 'headers' => [
                     'Content-type' => 'application/json'
@@ -43,18 +80,25 @@ class FacturacionController extends Controller
 //llamado transform
 
         $client = new \GuzzleHttp\Client();
-        $homologacion_factura = $client->request(
+        $formato_pago = $client->request(
             'GET',
-            'http://localhost:8484/transform/' . $convenio->id,
+            $this->hostname . ':8484/transform',
             [
                 'headers' => [
                     'Content-type' => 'application/json'
+                ],
+                'json' => [
+                    'id_convenio' => $convenio->id,
+                    'tipo_servicio' => $convenio->tipo_servicio,
+                    'metodo_facturacion' => $request->method(),
+                    'ref_factura' => $ref_factura,
+                    'valor_pagar' => $valor_pagar
                 ]
             ]
         );
 
 
-        $homologacion_factura = json_decode($homologacion_factura->getBody());
+        $formato_pago = json_decode($formato_pago->getBody());
 
      
 
@@ -66,47 +110,21 @@ class FacturacionController extends Controller
         $client = new \GuzzleHttp\Client();
         $respuesta = $client->request(
             'POST',
-            'http://localhost:8585/dispatching',
+            $this->hostname . ':8585/dispatching',
             [
                 'headers' => [
                     'Content-type' => 'application/json'
                 ],
                 'json' => [
-                    'valorFactura' => 5000
+                    'ref_factura' => $ref_factura,
+                    'convenio' => $convenio,
+                    'formato_pago' => $formato_pago,
+                    'metodo' => 'GET'
                 ]
             ]
         );
 
 
-        $respuesta = json_decode($respuesta->getBody());
-
-     
-//fin llamado dispatching
-
-  // return ($convenio->getBody());
-        die();
+        return $respuesta->getBody();
     }
-
-    /** 
-     * post_facturacion api 
-     * 
-     * @return \Illuminate\Http\Response 
-     */
-
-    public function post_facturacion(Request $request)
-    {
-        $ref_factura = $request['ref'];
-    }
-
-    /** 
-     * delete_facturacion api 
-     * 
-     * @return \Illuminate\Http\Response 
-     */
-
-    public function delete_facturacion(Request $request)
-    {
-        $ref_factura = $request['ref'];
-    }
-
 }
