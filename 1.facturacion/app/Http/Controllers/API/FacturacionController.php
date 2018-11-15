@@ -92,7 +92,8 @@ class FacturacionController extends Controller
                     'tipo_servicio' => $convenio->tipo_servicio,
                     'metodo_facturacion' => $request->method(),
                     'ref_factura' => $ref_factura,
-                    'valor_pagar' => $valor_pagar
+                    'valor_pagar' => $valor_pagar,
+                    'endpoint' => $convenio->endpoint
                 ]
             ]
         );
@@ -119,7 +120,7 @@ class FacturacionController extends Controller
                     'ref_factura' => $ref_factura,
                     'convenio' => $convenio,
                     'formato_pago' => $formato_pago,
-                    'metodo' => 'GET'
+                    'metodo' => $request->method()
                 ]
             ]
         );

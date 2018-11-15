@@ -54,10 +54,40 @@ class DispatchingController extends Controller
 
 
         } elseif ($data_factura['convenio']['tipo_servicio'] == 'REST') {
-            die();
+
+            $data_factura['convenio']['endpoint'] = $data_factura['formato_pago']['accion'];
+
+            $client = new \GuzzleHttp\Client();
+
+            $json_params =[];
+
+            //p
+            if($data_factura['convenio']['id'] == 2){
+                $json_params = [
+                    'valorFactura' => $data_factura['formato_pago']['valor_pagar']
+                ];
+            }
+            
+           
+            $res = $client->request(
+                $data_factura['metodo'],
+                $data_factura['convenio']['endpoint'],
+                [
+                    'headers' => [
+                        //p
+                        'Content-type' => 'application/json'
+                    ],
+                    'json' => $json_params
+                ]
+            );
+
+            return ($res->getBody());
+           
+           
+            
         }
 
-        die();
+        
     }
 
 }

@@ -24,13 +24,21 @@ class TransformController extends Controller
         $tipo_servicio = $request->all()['tipo_servicio'];
         $metodo_facturacion = $request->all()['metodo_facturacion'];
         $ref_factura = $request->all()['ref_factura'];
-        $valor_pagar = $request->all()['valor_pagar'];;
+        $valor_pagar = $request->all()['valor_pagar'];
 
+
+        $homologacion_factura = HomologacionFactura::where('id_convenio', $id_convenio)->first();
+
+        $nombre_id_referencia = json_decode($homologacion_factura)->nombre_id_referencia;
+        $nombre_valor_pagar = json_decode($homologacion_factura)->nombre_valor_pagar;
+
+        $variables = array($nombre_id_referencia => $ref_factura, $nombre_valor_pagar => $valor_pagar);
 
         if ($tipo_servicio == 'SOAP') {
-            $homologacion_factura = HomologacionFactura::where('id_convenio', $id_convenio)->first();
+          
             $soap_convenio = SoapConvenio::where('id_convenio', $id_convenio)->first();
 
+          
 
             if ($metodo_facturacion == 'GET') {
                 $accion = $soap_convenio->consultar_accion;
@@ -51,10 +59,9 @@ class TransformController extends Controller
 
             //
 
-            $nombre_id_referencia =json_decode($homologacion_factura)->nombre_id_referencia;
-            $nombre_valor_pagar =json_decode($homologacion_factura)->nombre_valor_pagar;
+           
 
-            $variables = array($nombre_id_referencia => $ref_factura, $nombre_valor_pagar => $valor_pagar);
+           
 
             foreach ($variables as $key => $value) {
                 $xml_beta = str_replace('{' . $key . '}', $value, $xml_beta);
@@ -62,13 +69,28 @@ class TransformController extends Controller
 
             $xml= [
               'plantilla' =>  $xml_beta,
-              'accion' => $accion
+              'accion' => $accion,
+              'valor_pagar' => $valor_pagar
             ];
             
             return json_encode($xml);
 
         } elseif ($tipo_servicio == 'REST') {
 
+            $endpoint_beta = $request->all()['endpoint'];
+
+            foreach ($variables as $key => $value) {
+                $endpoint_beta = str_replace('{' . $key . '}', $value, $endpoint_beta);
+            }
+
+
+            $params_endpoint = [
+                'plantilla' => '',
+                'accion' => $endpoint_beta,
+                'valor_pagar' => $valor_pagar
+            ];
+
+            return json_encode($params_endpoint);
 
         }
 
