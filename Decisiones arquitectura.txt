@@ -1,0 +1,15 @@
+1. Domain Inventory: Al estar enfocados en el dominio especifico que permita brindar a los clientes la capacidad  para el pago de servicios, consideramos que Domain Inventory es el patrón adecuado ya que no podemos contemplar una estandarización total en el banco ABC.
+2. Canonical Schema: Con el objetivo de evitar las transformaciones internas de datos en los servicios a construir se plantea implementar este patrón.
+3. Schema Centralization: Nos apoyamos en este patrón buscando eliminar la representación de datos redundantes.
+4. Contract Centralization: Con este patrón buscamos desacoplar el consumidor de la implementación de los servicios a realizar.
+5. Decoupled Contract: Garantizará el necesario desacoplamiento entre el contrato con la capacidades ofrecidas, de la implementación tecnológica realizada.
+6. Service Layers: Especializaremos capas encargadas de proveer los servicios de utilidades y los servicios de procesos requeridos.
+7. Process Centralization: Brindará la centralización de los procesos de negocio lo cual soportará la composición requerida para la solución.
+
+Al brindar la capacidad requerida, se hace necesario aplicar el patrón Capability Composition que fortalecerá la arquitectura seleccionada. De igual forma se utilizará el patrón Composition Autonomy buscando mantener al máximo la autonomía de la composición final. 
+
+El patrón Intermediate Routing brindara soporte a la solución proveyendo el correcto direccionamiento de los mensajes según el flujo que se necesite para realizar las operaciones de pago.
+
+Teniendo en cuenta la pluralidad de posibles convenios y el posible aumento de los mismos, se hará uso del patrón Content Negotiation para brindar la posibilidad de comunicación con consumidores que establezcan sus servicios vía JSON o XML, estándares definidos para soportar por la solución.
+
+Por último, y de acuerdo a los requisitos expuestos por el banco, aplicaremos el patrón Contenerization buscando un mayor aislamiento y especialización logrando la capacidad de escalar y desplegar independientemente según convenga a cada servicio.
